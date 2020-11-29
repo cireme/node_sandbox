@@ -1,0 +1,33 @@
+<div>
+    <input id="input-search" name="search" value="{{search}}" />
+    <button id="button-search">Rechercher</button>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <td>Code</td>
+            <td>Nom</td>
+            <td>Prix</td>
+        </tr>
+    </thead>
+    <tbody id="table-body">
+        {{#each products}}
+        <tr>
+            <td>{{this.productCode}}</td>
+            <td>{{this.productName}}</td>
+            <td>{{this.buyPrice}}</td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+
+<script id="template-rows" type="text/x-handlebars-template">
+    \{{#each products}}
+    <tr>
+        <td>\{{this.productCode}}</td>
+        <td>\{{this.productName}}</td>
+        <td>\{{this.buyPrice}}</td>
+    </tr>
+    \{{/each}}
+</script>
