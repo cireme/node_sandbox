@@ -1,10 +1,12 @@
+/* Imports */
 const DBManager = require('./db-manager');
+const ProductRepository = require('./repositories/product-repository');
 const express = require('express');
 const exphbs = require('express-handlebars');
 const { response } = require('express');
 
+/* Server & Templating configuration */
 const app = express();
-const dbManager = new DBManager();
 
 app.engine('hbs', exphbs({
     extname: '.hbs'
@@ -14,35 +16,28 @@ app.use(express.static('public'));
 
 app.set('view engine', 'hbs');
 
+/* Routes definition */
+const dbManager = new DBManager();
+const productRepository = new ProductRepository(dbManager);
+
 app.get('/', function (req, res) {
-    let query = "select * from products";
-
-    dbManager.db.query(query, function (err, result) {
-        if (err) { throw err };
-
+    productRepository.findAll().then((products => {
         res.render('home', {
-            products: result
+            products
         });
-    });
+    }));
 });
 
 app.get('/search', function (req, res) {
-    let query = "select * from products";
     const search = req.query.search;
 
-    console.log(search);
-
-    if(search) {
-        query += ' where productName like "%' + search + '%"';
-    } else {
+    if(!search) {
         throw new Error('missing search parameter');
     }
 
-    dbManager.db.query(query, function (err, result) {
-        if (err) { throw err };
-
-        res.send(result);
-    });
+    productRepository.searchByName(search).then((products => {
+        res.send(products);
+    }));
 });
 
 app.listen(3000, () => {

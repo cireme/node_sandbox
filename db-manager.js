@@ -19,6 +19,16 @@ class DBManager {
         });
     }
 
+    query(sql, args) {
+        return new Promise( ( resolve, reject ) => {
+            this._db.query( sql, args, ( err, rows ) => {
+                if ( err )
+                    return reject( err );
+                resolve( rows );
+            } );
+        } );
+    }
+
     get db() {
         return this._db;
     }
